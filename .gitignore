@@ -1,7 +1,9 @@
 
-images\ads\*
+images/ads/*
+!images/ads/
 
-images\avatars\*
+images/avatars/*
+!images/avatars/
 
 reserv.txt
 
