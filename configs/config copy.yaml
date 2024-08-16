@@ -1,12 +1,12 @@
 server:
-  port: ":8080"       # Порт, на котором будет запускаться сервер
+  port: "Fill Thisgit rm --cached filename"       # Порт, на котором будет запускаться сервер
 
 database:
-  host: "localhost"   # Адрес базы данных
-  port: 5432          # Порт базы данных
-  user: "trader"    # Имя пользователя базы данных
-  password: "tradertestpopa"  # Пароль пользователя базы данных
-  dbname: "tradeplatform"    # Имя базы данных
+  host: "Fill This"   # Адрес базы данных
+  port:   Fill This       # Порт базы данных
+  user: "Fill This"    # Имя пользователя базы данных
+  password: "Fill This"  # Пароль пользователя базы данных
+  dbname: "Fill This"    # Имя базы данных
   sslmode: "disable"
   
 
@@ -18,7 +18,7 @@ logger:
 
 #jwt token string
 jwt:
-  jwtkey: "moy sekretniy token string, ne pokazivay ego!"
+  jwtkey: "Fill This"
 
 migration:
   migrationpath: "./db/migrations" #путь к миграциям
