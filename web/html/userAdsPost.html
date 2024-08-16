@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать объявление</title>
+    <link rel="stylesheet" href="/css/style.css"> <!-- Подключаем CSS-стили -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(230, 206, 175);
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .nav-links {
+            display: flex;
+        }
+        .header .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+        }
+        .ad-form {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .ad-form h2 {
+            margin-bottom: 20px;
+        }
+        .ad-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .ad-form input[type="text"], .ad-form input[type="file"], .ad-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .ad-form input[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .ad-form input[type="submit"]:hover {
+            background-color: #555;
+        }
+        .ad-form .price-container {
+            display: flex;
+            align-items: center;
+        }
+        .ad-form .price-container input[type="text"] {
+            flex: 1;
+        }
+        .ad-form .price-container label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="/home">Домой</a>
+            <a href="/ads">Смотреть объявления</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="ad-form">
+            <h2>Создать объявление</h2>
+            <form action="/ads/post" method="post" enctype="multipart/form-data">
+                <label for="ads_name">Название объявления:</label>
+                <input type="text" id="ads_name" name="ads_name" required>
+
+                <label for="ads_description">Описание:</label>
+                <textarea id="ads_description" name="ads_description" rows="4" required></textarea>
+
+                <label for="image1">Изображение 1:</label>
+                <input type="file" id="image1" name="image1" accept="image/*">
+
+                <label for="image2">Изображение 2:</label>
+                <input type="file" id="image2" name="image2" accept="image/*">
+
+                <label for="image3">Изображение 3:</label>
+                <input type="file" id="image3" name="image3" accept="image/*">
+
+                <div class="price-container">
+                    <label for="price">Цена:</label>
+                    <input type="text" id="price" name="price" placeholder="Введите цену" >
+                    <label>
+                        <input type="checkbox" id="negotiable" name="negotiable">
+                        Договорная
+                    </label>
+                </div>
+
+                <input type="submit" value="Создать объявление">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('negotiable').addEventListener('change', function() {
+            const priceInput = document.getElementById('price');
+            if (this.checked) {
+                priceInput.value = '0'; // Устанавливаем цену в 0, если выбрана опция "Договорная"
+                priceInput.disabled = true; // Отключаем поле ввода цены
+            } else {
+                priceInput.disabled = false; // Включаем поле ввода, если опция не выбрана
+            }
+        });
+    </script>
+</body>
+</html>

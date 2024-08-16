@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS user_data;
+
+DROP TABLE IF EXISTS user_ads;
+
+DROP TABLE IF EXISTS users;
+
+DROP TABLE IF EXISTS likes;

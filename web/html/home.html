@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Platform</title>
+    <link rel="stylesheet" href="/css/home_style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gopher:wght@400;700&display=swap">
+</head>
+<body>
+    <div id="glav">
+        <div id="header">
+            <div id="home">
+                <a id="platform-name" href="/home">Trade Platform</a>
+                <a id="home-page" href="/home">Домашняя страница</a>
+                <a id="add-ad" href="/home/ads-form">Добавить объявление</a>
+            </div>
+            <div id="search">
+                <form id="search-form">
+                    <input type="text" id="search-input" placeholder="Search...">
+                    <button type="submit" id="search-button">
+                        <img src="/images/search-icon.png" alt="Search">
+                    </button>
+                </form>
+            </div>
+            <div id="profile">
+                <a href="/profile/{{.UserData.Login}}" id="user-name">{{.UserData.Name}}</a>
+                <a href="/profile/{{.UserData.Login}}" id="user-avatar">
+                    <img src="{{.UserData.ImageProfile}}" alt="user-avatar">
+                </a>
+            </div>
+        </div>
+        <div id="ads">
+            Здесь могла быть ваша реклама!!!
+        </div>
+        <div id="main">
+            <div id="buttons">
+                <button id="all-ads">Все объявления</button>
+                <button id="favorites">Избранное</button>
+                <button id="your-ads">Ваши объявления</button>
+            </div>
+            <div id="models">
+                {{range .UserAds}}
+                <div class="model">
+                    <div class="image">
+                        <img src="{{.Image_1}}" alt="Model Image">
+                    </div>
+                    <div class="content">
+                        <div class="name">
+                            <a href="/ads/{{.Ads_Id}}">{{.Ads_Name}}</a>
+                        </div>
+                        <div class="description">{{.Ads_Description}}</div>
+                        <div class="button-view">
+                            <button onclick="location.href='/ads/{{.Ads_Id}}'">View</button>
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+        </div>
+        <div id="footer">
+            <div id="email">
+                <a href="mailto:your-email@example.com">Почта</a>
+            </div>
+            <div id="trade-platform">
+                Trade Platform
+            </div>
+            <div id="instagram">
+                <a href="https://www.instagram.com/your-profile" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход/Регистрация</title>
+    <link rel="stylesheet" href="/css/style.css"> <!-- Подключаем CSS-стили -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(230, 206, 175);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .auth-form {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .auth-form h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .auth-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .auth-form input[type="text"], .auth-form input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .auth-form input[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+        .auth-form input[type="submit"]:hover {
+            background-color: #555;
+        }
+        .auth-form .switch-form {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .auth-form .switch-form a {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .auth-form .switch-form a:hover {
+            text-decoration: underline;
+        }
+        .auth-form .switch-form span {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-form">
+        <h2 id="form-title">Вход в аккаунт</h2>
+        <form id="auth-form" action="/auth/login" method="post" onsubmit="return validateForm()">
+            <label for="username">Логин:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+
+            <div id="confirm-password-container" style="display: none;">
+                <label for="confirm-password">Повторите пароль:</label>
+                <input type="password" id="confirm-password" name="confirm-password">
+            </div>
+
+            <input type="submit" value="Войти">
+        </form>
+        <div class="switch-form">
+            <span>Еще не зарегистрированы?</span>
+            <a href="#" id="switch-to-register">Регистрация</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('switch-to-register').addEventListener('click', function(event) {
+            event.preventDefault();
+            const formTitle = document.getElementById('form-title');
+            const authForm = document.getElementById('auth-form');
+            const confirmPasswordContainer = document.getElementById('confirm-password-container');
+            
+            if (formTitle.textContent === 'Вход в аккаунт') {
+                formTitle.textContent = 'Регистрация';
+                authForm.action = '/auth/register';
+                document.querySelector('input[type="submit"]').value = 'Зарегистрироваться';
+                document.querySelector('.switch-form span').textContent = 'Уже зарегистрированы?';
+                document.getElementById('switch-to-register').textContent = 'Вход';
+                confirmPasswordContainer.style.display = 'block';
+                document.getElementById('confirm-password').required = true;
+            } else {
+                formTitle.textContent = 'Вход в аккаунт';
+                authForm.action = '/auth/login';
+                document.querySelector('input[type="submit"]').value = 'Войти';
+                document.querySelector('.switch-form span').textContent = 'Еще не зарегистрированы?';
+                document.getElementById('switch-to-register').textContent = 'Регистрация';
+                confirmPasswordContainer.style.display = 'none';
+                document.getElementById('confirm-password').required = false;
+            }
+        });
+
+        function validateForm() {
+            const formTitle = document.getElementById('form-title').textContent;
+            if (formTitle === 'Регистрация') {
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                if (password !== confirmPassword) {
+                    alert('Пароли не совпадают.');
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

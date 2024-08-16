@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать профиль</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(230, 206, 175);
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .nav-links a, .header .nav-buttons a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .header .nav-buttons .logout-button {
+            background-color: #e74c3c;
+        }
+        .container {
+            padding: 20px;
+        }
+        .profile-form {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .profile-form h2 {
+            margin-bottom: 20px;
+        }
+        .profile-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .profile-form input[type="text"], .profile-form p[id="login"] {
+            width: 100%;
+            padding: 7px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .profile-form input[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .profile-form input[type="submit"]:hover {
+            background-color: #555;
+        }
+        .avatar {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            margin-right: auto;
+            display: block;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="/home">Домой</a>
+            <a href="/ads">Смотреть объявления</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="/profile/form" class="active">Редактировать профиль</a>
+            <a href="/logout" class="logout-button">Выйти</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="profile-form">
+            <h2>Редактировать профиль</h2>
+            <form action="/profile/update" method="post" enctype="multipart/form-data">
+                <label for="login">Логин:</label>
+                <p id="login">{{.Login}}</p>
+                <input type="hidden" id="login" name="login" value="{{.Login}}">
+                <p class="login-note">Параметр Login нельзя изменить.</p>
+
+                <label for="name">Имя:</label>
+                <input type="text" id="name" name="name" value="{{.Name}}" required>
+
+                <label for="first_name">Фамилия:</label>
+                <input type="text" id="first_name" name="first_name" value="{{.FirstName}}" required>
+
+                <label for="phone_number">Телефон:</label>
+                <input type="text" id="phone_number" name="phone_number" value="{{.PhoneNumber}}" required>
+
+                <label for="image_profile">Текущее фото профиля:</label>
+                <img id="image_profile_preview" class="avatar" src="{{.ImageProfile}}" alt="Фото профиля">
+                <input type="hidden" name="old_image_profile" value="{{.ImageProfile}}">
+
+                <label for="image_profile">Загрузить новое фото профиля:</label>
+                <input type="file" id="image_profile" name="image_profile" accept="image/*">
+                
+                <input class="saveChanges" type="submit" value="Сохранить изменения">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('image_profile').addEventListener('change', function(event) {
+            const preview = document.getElementById('image_profile_preview');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

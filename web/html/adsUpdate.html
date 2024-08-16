@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать объявление</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(230, 206, 175);
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .nav-links {
+            display: flex;
+        }
+        .header .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .header #profile {
+            display: flex;
+            align-items: center;
+        }
+        .header #profile a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .header #user-avatar img {
+            max-width: 50px;
+            border-radius: 50%;
+        }
+        .container {
+            padding: 20px;
+        }
+        .profile-form {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .profile-form h2 {
+            margin-bottom: 20px;
+        }
+        .profile-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .profile-form input[type="text"], .profile-form input[type="number"], 
+        .profile-form input[type="file"], .profile-form p[id="id"] {
+            width: 100%;
+            padding: 7px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .profile-form .existing-images {
+            margin-bottom: 20px;
+        }
+        .profile-form .existing-images img {
+            max-width: 150px;
+            max-height: 150px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .profile-form input[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .profile-form input[type="submit"]:hover {
+            background-color: #555;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="/home">Домой</a>
+            <a href="/ads">Смотреть объявления</a>
+        </div>
+        <div id="profile">
+            <a href="/profile/{{.UserData.Login}}" id="user-name">{{.UserData.Name}}</a>
+            <a href="/profile/{{.UserData.Login}}" id="user-avatar">
+                <img src="{{.UserData.ImageProfile}}" alt="user-avatar">
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="profile-form">
+            <h2>Редактировать объявление</h2>
+            <form action="/ads/update" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="id" name="id" value="{{.Ads.Ads_Id}}">
+
+                <input type="hidden" id="userid" name="userid" value="{{.UserData.Login}}">
+
+                <label for="ads_name">Название объявления:</label>
+                <input type="text" id="ads_name" name="ads_name" value="{{.Ads.Ads_Name}}" required>
+
+                <label for="ads_description">Описание:</label>
+                <input type="text" id="ads_description" name="ads_description" value="{{.Ads.Ads_Description}}" required>
+
+                <label>Если хотите поставить договорную, впишите 0.00!</label>
+                <label for="price">Цена:</label>
+                <input type="number" id="price" name="price" value="{{.Ads.Ads_Price}}" step="0.01" required>
+
+                <label>Текущие изображения:</label>
+                <div class="existing-images">
+                    {{if .Ads.Image_1}}
+                        <img src="{{.Ads.Image_1}}" alt="Текущее изображение 1">
+                        <input type="hidden" name="old_image_1" value="{{.Ads.Image_1}}">
+                    {{end}}
+                    {{if .Ads.Image_2}}
+                        <img src="{{.Ads.Image_2}}" alt="Текущее изображение 2">
+                        <input type="hidden" name="old_image_2" value="{{.Ads.Image_2}}">
+                    {{end}}
+                    {{if .Ads.Image_3}}
+                        <img src="{{.Ads.Image_3}}" alt="Текущее изображение 3">
+                        <input type="hidden" name="old_image_3" value="{{.Ads.Image_3}}">
+                    {{end}}
+                </div>
+
+                <label for="images">Фото (до 3 изображений):</label>
+                <input type="file" id="images" name="images" accept="image/*" multiple>
+
+                <input type="submit" value="Сохранить изменения">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

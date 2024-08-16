@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+    <link rel="stylesheet" href="/css/style.css"> <!-- Подключаем CSS-стили -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(230, 206, 175);
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .nav-links {
+            display: flex;
+        }
+        .header .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .header .nav-buttons {
+            display: flex;
+            align-items: center;
+        }
+        .header .nav-buttons a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .header .nav-buttons .logout-button {
+            background-color: #e74c3c;
+        }
+        .container {
+            padding: 20px;
+        }
+        .profile-info, .user-ads, .user-likes {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: rgb(226, 197, 161);
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .profile-info img {
+            max-width: 150px;
+            border-radius: 50%;
+        }
+        .user-ads img, .user-likes img {
+            max-width: 100px;
+        }
+        .user-ads .ad, .user-likes .like {
+            margin-bottom: 10px;
+        }
+        .tab-buttons {
+            margin-bottom: 20px;
+        }
+        .tab-buttons button {
+            background-color: #ddd;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .tab-buttons button.active {
+            background-color: #333;
+            color: #fff;
+        }
+        .hidden {
+            display: none;
+        }
+        .delete-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #e74c3c;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
+        .change-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #5ba765;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .change-button:hover {
+            background-color: #4d8d56;
+        }
+        .ad {
+            display: flex;
+            background-color: rgb(240, 220, 170);
+            width: 100%;
+            border-radius: 15px;
+
+        }
+        .func-buttons{
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="/home">Домой</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="/profile/form">Редактировать профиль</a>
+            <form action="/quit" method="post" style="display: inline;">
+                <button type="submit" class="logout-button">Выйти</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Профиль пользователя -->
+        <div class="profile-info">
+            <h2>Профиль пользователя</h2>
+            <img src="{{.UserData.ImageProfile}}" alt="Фото профиля">
+            <p><strong>Имя:</strong> {{.UserData.Name}}</p>
+            <p><strong>Фамилия:</strong> {{.UserData.FirstName}}</p>
+            <p><strong>Телефон:</strong> {{.UserData.PhoneNumber}}</p>
+            <p><strong>Логин:</strong> {{.UserData.Login}}</p>
+        </div>
+
+ <!-- Вкладки для переключения между объявлениями и лайками -->
+ <div class="tab-buttons">
+    <button id="ads-tab" class="active" onclick="showTab('ads')">Мои объявления</button>
+    <button id="likes-tab" onclick="showTab('likes')">Лайки</button>
+</div>
+
+        <!-- Объявления пользователя -->
+        <div id="ads-content" class="user-ads">
+            <h2>Мои объявления</h2>
+            {{range .UserAds}}
+                <div class="ad">
+                    <div class="adInfo">
+                    <h3>{{.Ads_Name}}</h3>
+                    <img src="{{.Image_1}}" alt="Изображение объявления">
+                    <p>{{.Ads_Description}}</p>
+                    <p><strong>Цена:</strong> {{.Ads_Price}}</p>
+                </div>
+                <div class="func-buttons">
+                    <form action="/ads/delete/{{.Ads_Id}}" method="post">
+                        <button type="submit" class="delete-button">Удалить объявление</button>
+                    </form>
+                    <a href="/ads/form_update/{{ .Ads_Id}}">
+                        <button type="submit" class="change-button">Изменить объявление</button>
+                    </a>
+                </div>
+            </div>
+            {{else}}
+                <p>Нет объявлений.</p>
+            {{end}}
+        </div>
+
+        <!-- Лайки пользователя -->
+        <div id="likes-content" class="user-likes hidden">
+            <h2>Мои лайки</h2>
+            {{range .Likes}}
+                <div class="like">
+                    <h3>{{.Ads_Name}}</h3>
+                    <img src="{{.Image_1}}" alt="Изображение объявления">
+                    <p>{{.Ads_Description}}</p>
+                    <p><strong>Цена:</strong> {{.Ads_Price}}</p>
+                </div>
+                <div>
+                    <form action="/ads/like/{{.Ads_Id}}" method="post">
+                        <button type="submit" class="favorite-button" onclick="addToFavorites('{{.Ads_Id}}')">Убрать из избранного</button>
+                    </form>
+                </div>
+            {{else}}
+                <p>Нет лайков.</p>
+            {{end}}
+        </div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            document.getElementById('ads-content').classList.toggle('hidden', tab !== 'ads');
+            document.getElementById('likes-content').classList.toggle('hidden', tab !== 'likes');
+            document.getElementById('ads-tab').classList.toggle('active', tab === 'ads');
+            document.getElementById('likes-tab').classList.toggle('active', tab === 'likes');
+        }
+    </script>
+</body>
+</html>

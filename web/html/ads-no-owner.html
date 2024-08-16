@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объявление</title>
+    <link rel="stylesheet" href="/css/style.css"> <!-- Подключаем CSS-стили -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(230, 206, 175);
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header .nav-links {
+            display: flex;
+        }
+        .header .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .header #profile {
+            display: flex;
+            align-items: center;
+        }
+        .header #profile a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .header #user-avatar img {
+            max-width: 50px;
+            border-radius: 50%;
+        }
+        .container {
+            padding-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .ad-details {
+            display: flex;
+            align-items: flex-start;
+            width: 80%;
+            background-color: rgb(226, 197, 161);
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .ad-images {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 20px;
+            margin-left: 10px;
+            width: 40%;
+        }
+        .ad-images .main-image img {
+            width: 300px; /* Задаем фиксированную ширину */
+            height: 300px; /* Задаем фиксированную высоту */
+            object-fit: cover; /* Масштабируем изображение, сохраняя его пропорции */
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .ad-images .thumbnails {
+            display: flex;
+        }
+        .ad-images .thumbnails img {
+            width: 50px; /* Задаем фиксированную ширину */
+            height: 50px; /* Задаем фиксированную высоту */
+            object-fit: cover; /* Масштабируем изображение, сохраняя его пропорции */
+            border-radius: 5px;
+            margin-right: 1px;
+            cursor: pointer;
+        }
+        .ad-info {
+            flex-grow: 1;
+            width: 60%;
+        }
+        .ad-info h2 {
+            margin-top: 0;
+        }
+        .ad-info p {
+            margin: 10px 0;
+        }
+        .ad-info .price {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .owner-info {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .owner-info img {
+            max-width: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .owner-info .owner-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .owner-info .owner-details .phone {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .owner-info .owner-details .phone strong {
+            font-weight: bold;
+        }
+        .owner-info .owner-details .phone-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .favorite-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #e74c3c; /* Красный цвет для сердечка */
+        }
+        .favorite-button:hover .heart-icon {
+            color: #c0392b; /* Изменение цвета при наведении */
+        }
+        .heart-icon {
+            font-size: 24px; /* Размер иконки */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="nav-links">
+            <a href="/home">Домой</a>
+        </div>
+        <div id="profile">
+            <a href="/profile/{{.UserData.Login}}" id="user-name">{{.UserData.Name}}</a>
+            <a href="/profile/{{.UserData.Login}}" id="user-avatar">
+                <img src="{{.UserData.ImageProfile}}" alt="user-avatar">
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Детали объявления -->
+        <div class="ad-details">
+            <div class="ad-images">
+                <div class="main-image">
+                    <img src="{{.Ads.Image_1}}" alt="Основное изображение" id="main-image">
+                </div>
+                <div class="thumbnails">
+                    {{if .Ads.Image_1}}
+                        <img src="{{.Ads.Image_1}}" alt="Изображение объявления 2" onclick="changeImage('{{.Ads.Image_1}}')">
+                    {{end}}
+                    {{if .Ads.Image_2}}
+                        <img src="{{.Ads.Image_2}}" alt="Изображение объявления 2" onclick="changeImage('{{.Ads.Image_2}}')">
+                    {{end}}
+                    {{if .Ads.Image_3}}
+                        <img src="{{.Ads.Image_3}}" alt="Изображение объявления 3" onclick="changeImage('{{.Ads.Image_3}}')">
+                    {{end}}
+                </div>
+            </div>
+            <div class="ad-info">
+                <h2>{{.Ads.Ads_Name}}</h2>
+                <p>{{.Ads.Ads_Description}}</p>
+                <div class="owner-info">
+                    <img src="{{.OwnerUserData.ImageProfile}}" alt="owner-avatar">
+                    <div class="owner-details">
+                        <a href="/profile/{{.OwnerUserData.Login}}">{{.OwnerUserData.Name}}</a>
+                        <span class="phone-label">номер телефона:</span>
+                        <span class="phone">{{if .OwnerUserData.PhoneNumber}}<strong>{{.OwnerUserData.PhoneNumber}}</strong>{{else}}номер скрыт{{end}}</span>
+                    </div>
+                </div>
+                <p class="price">{{if .Ads.Ads_Price}}Цена: {{.Ads.Ads_Price}}{{else}}договорная{{end}}</p>
+                <div>
+                    <form action="/ads/like/{{.Ads.Ads_Id}}" method="post">
+                        <p>Кол-во лайков: {{.Ads.Ads_Likes}}</p>
+                        <button type="submit" class="favorite-button" onclick="addToFavorites('{{.Ads.Ads_Id}}')">
+                            <span class="heart-icon">&#10084;</span> <!-- Это будет иконка сердечка -->
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeImage(imageSrc) {
+            const mainImage = document.getElementById('main-image');
+            const currentSrc = mainImage.src;
+            mainImage.src = imageSrc;
+            // Find the thumbnail with the new main image source and update its src to the old main image
+            const thumbnails = document.querySelectorAll('.thumbnails img');
+            thumbnails.forEach(thumbnail => {
+                if (thumbnail.src === imageSrc) {
+                    thumbnail.src = currentSrc;
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

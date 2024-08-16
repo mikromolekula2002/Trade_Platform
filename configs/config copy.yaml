@@ -1,0 +1,24 @@
+server:
+  port: ":8080"       # Порт, на котором будет запускаться сервер
+
+database:
+  host: "localhost"   # Адрес базы данных
+  port: 5432          # Порт базы данных
+  user: "trader"    # Имя пользователя базы данных
+  password: "tradertestpopa"  # Пароль пользователя базы данных
+  dbname: "tradeplatform"    # Имя базы данных
+  sslmode: "disable"
+  
+
+#может быть и не нужно это
+logger:
+  output: "stdout"  # Куда выводить логи: stdout или же file
+  filepath: ""      # Путь где будут храниться логи, если выбран output "file"
+  level: "debug"     # Уровни логирования: "debug", "info", "warn", "error"
+
+#jwt token string
+jwt:
+  jwtkey: "moy sekretniy token string, ne pokazivay ego!"
+
+migration:
+  migrationpath: "./db/migrations" #путь к миграциям
