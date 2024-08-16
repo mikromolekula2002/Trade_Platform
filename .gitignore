@@ -1,10 +1,4 @@
 
-images/ads/*
-!images/ads/
-
-images/avatars/*
-!images/avatars/
-
 reserv.txt
 
 config.yaml
