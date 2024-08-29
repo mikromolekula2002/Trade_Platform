@@ -8,7 +8,7 @@ import (
 
 // метод обновления пароля аккаунта
 func (p *PostgreSQL) UpdatePassword(login, hashPassword string) error {
-	result := p.DB.Model(&models.UserData{}).
+	result := p.DB.Model(&models.User{}).
 		Where("login = ?", login).
 		Update("hash_password", hashPassword)
 

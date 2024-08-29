@@ -31,6 +31,14 @@ type Config struct {
 	Migration struct {
 		MigrationPath string `yaml:"migrationpath"`
 	} `yaml:"migration"`
+	TestDatabase struct {
+		Host     string `yaml:"host"`
+		Port     string `yaml:"port"`
+		User     string `yaml:"user"`
+		Password string `yaml:"password"`
+		DBName   string `yaml:"dbname"`
+		Sslmode  string `yaml:"sslmode"`
+	} `yaml:"testdatabase"`
 }
 
 // LoadConfig - функция для загрузки конфигурации из YAML файла

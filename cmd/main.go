@@ -14,6 +14,7 @@ package main
 import (
 	"github.com/mikromolekula2002/Trade_Platform/internal/config"
 	"github.com/mikromolekula2002/Trade_Platform/internal/handler"
+	"github.com/mikromolekula2002/Trade_Platform/internal/jwt"
 	"github.com/mikromolekula2002/Trade_Platform/internal/repository"
 	"github.com/mikromolekula2002/Trade_Platform/internal/service"
 	"github.com/mikromolekula2002/Trade_Platform/pkg/database"
@@ -47,9 +48,9 @@ func main() {
 	//		loger.Logrus.Fatal(err)
 	//	}
 	//	loger.Logrus.Debug("Миграции успешно выполнены.")
-
+	jwtManager := jwt.InitJWT()
 	//Прописать инит Юзер Сервиса(валидация, работа с бд и прочее)
-	userSvc := service.NewUserService(*repository.PostgreInit(db), cfg.Jwt.JwtKey)
+	userSvc := service.NewUserService(repository.PostgreInit(db), jwtManager, cfg.Jwt.JwtKey)
 
 	// Прописать init Хендлера и маршруты
 	h := handler.Init(loger.Logrus, cfg, userSvc)

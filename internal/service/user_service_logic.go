@@ -13,10 +13,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type UserService struct {
+	repo   repository.UserRepository
+	jwt    jwt.JWTService
+	jwtKey string
+}
+
 // Инит нашей структуры с базой данных
-func NewUserService(repo repository.PostgreSQL, jwtkey string) *UserService {
+func NewUserService(repo repository.UserRepository, jwt jwt.JWTService, jwtkey string) *UserService {
 	return &UserService{
 		repo:   repo,
+		jwt:    jwt,
 		jwtKey: jwtkey,
 	}
 }
@@ -59,7 +66,7 @@ func (s *UserService) RegisterUser(login, password string) (string, error) {
 		return "", fmt.Errorf("userservice.go: RegisterUser\n%v", err)
 	}
 
-	jwtToken, err := jwt.CreateToken(user.Login, s.jwtKey)
+	jwtToken, err := s.jwt.CreateToken(user.Login, s.jwtKey)
 	if err != nil {
 		return "", fmt.Errorf("userservice.go: RegisterUser\n%v", err)
 	}
@@ -78,7 +85,7 @@ func (s *UserService) AuthUser(login, password string) (string, error) {
 		return "", fmt.Errorf("userservice.go: AuthUser - ошибка при проверке пароля.\nERROR: %v", err)
 	}
 
-	jwtToken, err := jwt.CreateToken(user.Login, s.jwtKey)
+	jwtToken, err := s.jwt.CreateToken(user.Login, s.jwtKey)
 	if err != nil {
 		return "", fmt.Errorf("userservice.go: AuthUser\n%v", err)
 	}
@@ -87,12 +94,12 @@ func (s *UserService) AuthUser(login, password string) (string, error) {
 
 // Сервисная логика, выход из аккаунта (удаление куки)
 func (s *UserService) QuitFromAccount(cookie *http.Cookie) (string, error) {
-	claims, err := jwt.ExtractToken(cookie.Value, s.jwtKey)
+	claims, err := s.jwt.ExtractToken(cookie.Value, s.jwtKey)
 	if err != nil {
 		return "", fmt.Errorf("userservice.go: QuitFromAccount: \n%v", err)
 	}
 
-	jwtToken, err := jwt.DeleteToken(claims.UserLogin, s.jwtKey)
+	jwtToken, err := s.jwt.DeleteToken(claims.UserLogin, s.jwtKey)
 	if err != nil {
 		return "", fmt.Errorf("userservice.go: QuitFromAccount: \n%v", err)
 	}
@@ -115,7 +122,7 @@ func (s *UserService) SaveUserData(data *models.UserData) error {
 
 // Метод сделан для проверки является ли юзер перешедший владельцем профиля и отдает true если это так
 func (s *UserService) VerifyUserOwner(cookie *http.Cookie, loginParam string) (bool, error) {
-	claims, err := jwt.ExtractToken(cookie.Value, s.jwtKey)
+	claims, err := s.jwt.ExtractToken(cookie.Value, s.jwtKey)
 	if err != nil {
 		return false, fmt.Errorf("userservice.go: VerifyUserOwner- ошибка с парсингом куки: \n%v", err)
 	}
@@ -133,7 +140,7 @@ func (s *UserService) UpdateUserData(cookie *http.Cookie, name, firstname, phone
 	var oldImages []string
 	oldImages = append(oldImages, oldImage)
 
-	claims, err := jwt.ExtractToken(cookie.Value, s.jwtKey)
+	claims, err := s.jwt.ExtractToken(cookie.Value, s.jwtKey)
 	if err != nil {
 		return "", fmt.Errorf("userservice.go: VerifyUserOwner- ошибка с парсингом куки: \n%v", err)
 	}
@@ -180,7 +187,7 @@ func (s *UserService) UpdateUserData(cookie *http.Cookie, name, firstname, phone
 // Сервисная логика, сохранение данных объявления в БД
 func (s *UserService) VerifyAdsOwner(cookie *http.Cookie, UserAds *models.UserAds) (string, bool, error) {
 	// получаем токен и его данные
-	claims, err := jwt.ExtractToken(cookie.Value, s.jwtKey)
+	claims, err := s.jwt.ExtractToken(cookie.Value, s.jwtKey)
 	if err != nil {
 		return "", false, fmt.Errorf("userservice.go: VerifyAdsOwner - ошибка с парсингом куки: \n%v", err)
 	}
@@ -195,7 +202,7 @@ func (s *UserService) VerifyAdsOwner(cookie *http.Cookie, UserAds *models.UserAd
 
 // Сервисная логика, сохранение данных объявления в БД
 func (s *UserService) SaveUserAds(cookie *http.Cookie, images []*multipart.FileHeader, adsName, adsDescription string, price float64) (string, error) {
-	claims, err := jwt.ExtractToken(cookie.Value, s.jwtKey)
+	claims, err := s.jwt.ExtractToken(cookie.Value, s.jwtKey)
 	if err != nil {
 		return "", fmt.Errorf("userservice.go: SaveUserAds- ошибка с парсингом куки: \n%v", err)
 	}
@@ -234,7 +241,7 @@ func (s *UserService) SaveUserAds(cookie *http.Cookie, images []*multipart.FileH
 // Сервисная логика, обновление данных объявления в БД
 func (s *UserService) UpdateUserAds(cookie *http.Cookie, userID, adsID, adsName, adsDescription string, price float64, images []*multipart.FileHeader, oldImages []string) error {
 	// получаем данные из токена(идентификатор пользователя)
-	claims, err := jwt.ExtractToken(cookie.Value, s.jwtKey)
+	claims, err := s.jwt.ExtractToken(cookie.Value, s.jwtKey)
 	if err != nil {
 		return fmt.Errorf("userservice.go: UpdateUserAds - ошибка с парсингом куки: \n%v", err)
 	}
@@ -307,7 +314,7 @@ func (s *UserService) UpdateUserAds(cookie *http.Cookie, userID, adsID, adsName,
 // Сервисная логика, удаление существующего объявления
 func (s *UserService) DeleteAds(cookie *http.Cookie, adsID string) (bool, error) {
 	// получаем данные из токена(идентификатор)
-	claims, err := jwt.ExtractToken(cookie.Value, s.jwtKey)
+	claims, err := s.jwt.ExtractToken(cookie.Value, s.jwtKey)
 	if err != nil {
 		return true, fmt.Errorf("userservice.go: DeleteAds: \n%v", err)
 	}

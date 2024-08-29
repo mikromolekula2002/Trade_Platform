@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/mikromolekula2002/Trade_Platform/internal/jwt"
 )
 
 // Функция создания cookie для отправки токена через cookie
@@ -23,7 +21,7 @@ func (s *UserService) SendToken(w http.ResponseWriter, jwtToken string) {
 }
 
 func (s *UserService) CheckToken(tokenString string) error {
-	err := jwt.VerifyToken(tokenString, s.jwtKey)
+	err := s.jwt.VerifyToken(tokenString, s.jwtKey)
 	if err != nil {
 		return fmt.Errorf("CheckToken - ошибка проверки токена: %w", err)
 	}

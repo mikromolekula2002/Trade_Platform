@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,8 +14,13 @@ func TestCreateToken(t *testing.T) {
 	jwtKey := "test_secret_key"
 	userLogin := "testuser"
 
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	jwtManager := InitJWT()
+
 	// Основной тест на создание токена
-	tokenString, err := CreateToken(userLogin, jwtKey)
+	tokenString, err := jwtManager.CreateToken(userLogin, jwtKey)
 	assert.NoError(t, err, "Ошибка при создании токена")
 	assert.NotEmpty(t, tokenString, "Созданный токен пуст")
 
@@ -43,12 +49,12 @@ func TestCreateToken(t *testing.T) {
 	assert.WithinDuration(t, time.Now().Add(24*time.Hour), time.Unix(claims.ExpiresAt, 0), time.Minute, "Срок действия токена установлен неправильно")
 
 	// Тест с пустым userLogin
-	emptyLoginToken, err := CreateToken("", jwtKey)
+	emptyLoginToken, err := jwtManager.CreateToken("", jwtKey)
 	assert.NoError(t, err, "Ошибка при создании токена с пустым userLogin")
 	assert.NotEmpty(t, emptyLoginToken, "Созданный токен с пустым userLogin пуст")
 
 	// Тест с пустым ключом
-	invalidKeyToken, err := CreateToken(userLogin, "")
+	invalidKeyToken, err := jwtManager.CreateToken(userLogin, "")
 	assert.Error(t, err, "Ожидалась ошибка при создании токена с пустым ключом")
 	assert.Empty(t, invalidKeyToken, "Созданный токен с пустым ключом не пуст")
 }
@@ -56,9 +62,9 @@ func TestCreateToken(t *testing.T) {
 func TestVerifyToken(t *testing.T) {
 	jwtKey := "test_secret_key"
 	userLogin := "testuser"
-
+	jwtManager := InitJWT()
 	// Создаем валидный токен
-	validTokenString, err := CreateToken(userLogin, jwtKey)
+	validTokenString, err := jwtManager.CreateToken(userLogin, jwtKey)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, validTokenString)
 
@@ -98,7 +104,7 @@ func TestVerifyToken(t *testing.T) {
 
 	for _, tt := range testTable {
 		t.Run(tt.name, func(t *testing.T) {
-			err := VerifyToken(tt.token, tt.key)
+			err := jwtManager.VerifyToken(tt.token, tt.key)
 			if tt.expectErr {
 				assert.Error(t, err, "Expected error but got none")
 			} else {
@@ -111,7 +117,7 @@ func TestVerifyToken(t *testing.T) {
 func TestExtractToken(t *testing.T) {
 	jwtKey := "test_secret_key"
 	userLogin := "testuser"
-
+	jwtManager := InitJWT()
 	// Создаем валидный токен
 	expirationTimeValid := time.Now().Add(24 * time.Hour)
 
@@ -166,7 +172,7 @@ func TestExtractToken(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			claims, err := ExtractToken(tt.token, tt.key)
+			claims, err := jwtManager.ExtractToken(tt.token, tt.key)
 			if tt.expectErr {
 				assert.Error(t, err)
 				assert.Nil(t, claims)

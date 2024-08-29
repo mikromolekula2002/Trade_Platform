@@ -32,14 +32,14 @@ type UserRepository interface {
 
 	// методы для работы с объявлениями пользователей
 	UpdateUserAds(userAds *models.UserAds) error
-	SaveUserAds(userAds *models.UserAds) error
-	DelUserAds(login string) error
-	GetOneAds(adsID int) (*models.UserAds, error)
+	SaveUserAds(userAds *models.UserAds) (string, error)
+	DelUserAds(userID string, adsID string) error
+	GetOneAds(adsID string) (*models.UserAds, error)
 	GetUserAds(login string) ([]*models.UserAds, error)
 	GetAllAds() ([]*models.UserAds, error)
 
 	// методы для работы с лайками
 	SaveLikes(likes *models.Likes) error
-	DelLikes(userLogin string, adsID int) error
+	DelLikes(userlogin string, adsId string) error
 	GetAllLikes(userLogin string) ([]*models.Likes, error)
 }
